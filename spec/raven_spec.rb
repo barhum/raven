@@ -21,5 +21,8 @@ describe Raven do
 		pymtReq.values['PRN'].should eq '840033'
 		pymtReq.values['Currency'].should eq 'USD'
 		pymtReq.values['CardNumber'].should eq '4000000000000010'
+		pymtReq.values['PymtType'].should eq 'cc_debit'
+		pymtReq.values['ExpiryDate'].should eq '0919'
+		pymtReq.values['Amount'].should eq "2000"
 	end	
 end
