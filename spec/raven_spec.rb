@@ -11,7 +11,7 @@ describe Raven do
 	end
 
 	it "should submit a raven request with PRN, currency, cardnumber, PymtType, ExpiryDate, Amount" do 
-    pymtReq = Raven::RavenRequest.new('submit')
+		pymtReq = Raven::RavenRequest.new('submit')
 		pymtReq.set('PRN', '840033')
 		pymtReq.set('Currency', 'USD')
 		pymtReq.set('CardNumber', '4000000000000010')
@@ -24,5 +24,5 @@ describe Raven do
 		pymtReq.values['PymtType'].should eq 'cc_debit'
 		pymtReq.values['ExpiryDate'].should eq '0919'
 		pymtReq.values['Amount'].should eq "2000"
-	end	
+	end 
 end
