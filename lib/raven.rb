@@ -67,6 +67,16 @@ module Raven
 
     def ravenOperations
       @ravenOperations = ['submit','closefile','response','void','hello','payments','events','status']
+    end
+
+    def get(*args)
+      results = []
+      args.each do |arg|
+        if (@values[arg] != nil)
+          results.push(@values[arg])
+        end  
+      end
+      results    
     end  
   end
 

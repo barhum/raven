@@ -2,13 +2,18 @@ require 'spec_helper'
 
 describe Raven do
   it "should not raise an exception if operation of type 'submit' is made" do
-    pymtReq = Raven::RavenRequest.new('submit')
+    pymtReq = Raven::Raven.new('submit')
     pymtReq.should_not raise_exception
   end
 
   it "should raise an exception if operation of type 'wrong' is made" do
-    expect { Raven::RavenRequest.new('wrong') }.to raise_exception
+    expect { Raven::Raven.new('wrong') }.to raise_exception
   end
+
+  it "should set the current operation of submit" do
+    pymtReq = Raven::Raven.new('submit')
+    pymtReq.operation.should eq 'submit'
+  end 
 
   it "should submit a raven request with PRN, currency, cardnumber, PymtType, ExpiryDate, Amount" do 
     pymtReq = Raven::RavenRequest.new('submit')
@@ -26,9 +31,18 @@ describe Raven do
     pymtReq.values['Amount'].should eq "2000"
   end 
 
-  it "should set the current operation of submit" do
-    pymtReq = Raven::Raven.new('submit')
-    pymtReq.operation.should eq 'submit'
-  end
+  it "should return the value of the key requested" do
+    pymtReq = Raven::RavenRequest.new('submit')
+    pymtReq.set('PRN', '840033')
+    pymtReq.set('Currency', 'USD')
+    pymtReq.get('PRN', 'Currency').should eq ['840033', 'USD'] 
+  end 
+
+  it "should return the value of the key requested" do
+    pymtReq = Raven::RavenRequest.new('submit')
+    pymtReq.set('PRN', '840033')
+    pymtReq.set('Currency', 'USD')
+    pymtReq.get('PRN', 'Wrong').should eq ['840033'] 
+  end     
 end
 
