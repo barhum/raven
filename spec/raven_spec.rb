@@ -43,6 +43,17 @@ describe Raven do
     pymtReq.set('PRN', '840033')
     pymtReq.set('Currency', 'USD')
     pymtReq.get('Wrong', 'Currency').should eq 'USD' 
-  end     
+  end  
+
+  it "should print the values in a friendly form" do 
+    pymtReq = Raven::RavenRequest.new('submit')
+    pymtReq.set('PRN', '840033')
+    pymtReq.set('Currency', 'USD')
+    pymtReq.set('CardNumber', '4000000000000010')
+    pymtReq.set('PymtType', 'cc_debit')
+    pymtReq.set('ExpiryDate', '0919')
+    pymtReq.set('Amount', 2000)
+    pymtReq.printValues.should print ['840033', 'USD', '4000000000000010', 'cc_debit', '0919', '2000']
+  end
 end
 

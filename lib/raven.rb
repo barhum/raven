@@ -75,6 +75,10 @@ module Raven
           return @values[arg]
         end  
       end   
+    end
+
+    def printValues
+      print @values.values 
     end  
   end
 
