@@ -25,5 +25,10 @@ describe Raven do
     pymtReq.values['ExpiryDate'].should eq '0919'
     pymtReq.values['Amount'].should eq "2000"
   end 
+
+  it "should set the current operation of submit" do
+    pymtReq = Raven::Raven.new('submit')
+    pymtReq.operation.should eq 'submit'
+  end
 end
 

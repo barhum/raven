@@ -3,13 +3,14 @@ require 'debugger'
 
 module Raven
   class Raven
-    attr_reader :values
-    
+    attr_reader :values, :operation
+
     def initialize(operation)
       @values = {}
       if !self.ravenOperations.include?(operation.to_s)
         raise "Operation not supported"
-      end         
+      end
+      @operation = operation         
     end
 
     def ravenOperations
