@@ -31,18 +31,18 @@ describe Raven do
     pymtReq.values['Amount'].should eq "2000"
   end 
 
-  it "should return the value of the key requested" do
+  it "should return the value of the first valid key requested" do
     pymtReq = Raven::RavenRequest.new('submit')
     pymtReq.set('PRN', '840033')
     pymtReq.set('Currency', 'USD')
-    pymtReq.get('PRN', 'Currency').should eq ['840033', 'USD'] 
+    pymtReq.get('PRN', 'Currency').should eq '840033' 
   end 
 
-  it "should return the value of the key requested" do
+  it "should ignore an invalid key and return the first valid key requested" do
     pymtReq = Raven::RavenRequest.new('submit')
     pymtReq.set('PRN', '840033')
     pymtReq.set('Currency', 'USD')
-    pymtReq.get('PRN', 'Wrong').should eq ['840033'] 
+    pymtReq.get('Wrong', 'Currency').should eq 'USD' 
   end     
 end
 

@@ -70,13 +70,11 @@ module Raven
     end
 
     def get(*args)
-      results = []
       args.each do |arg|
         if (@values[arg] != nil)
-          results.push(@values[arg])
+          return @values[arg]
         end  
-      end
-      results    
+      end   
     end  
   end
 
