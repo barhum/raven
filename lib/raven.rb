@@ -1,4 +1,4 @@
-require 'config'
+require 'config.rb'
 require 'debugger'
 
 module Raven
@@ -83,6 +83,11 @@ module Raven
   end
 
   class RavenRequest < Raven
+    def initialize(operation)
+      super
+      self.set('username', Config.RAVEN_USERNAME)
+    end  
+
     def set(key, value)
       @values[key] = value.to_s
     end

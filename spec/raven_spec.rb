@@ -55,5 +55,10 @@ describe Raven do
     pymtReq.set('Amount', 2000)
     pymtReq.printValues.should print ['840033', 'USD', '4000000000000010', 'cc_debit', '0919', '2000']
   end
+
+  it "should set the user name from the config file" do 
+    pymtReq = Raven::RavenRequest.new('submit')
+    pymtReq.values['username'].should eq "ernest"
+  end
 end
 
