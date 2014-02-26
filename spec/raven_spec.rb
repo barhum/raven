@@ -59,6 +59,8 @@ describe Raven do
   it "should set the user name from the config file" do 
     pymtReq = Raven::RavenRequest.new('submit')
     pymtReq.values['username'].should eq "ernest"
+    pymtReq.values['RAPIVersion'].should eq "2"
+    pymtReq.values['RAPIInterface'].should eq "Rails1.0"
   end
 end
 

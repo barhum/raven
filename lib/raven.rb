@@ -67,7 +67,7 @@ module Raven
 
     def ravenOperations
       @ravenOperations = ['submit','closefile','response','void','hello','payments','events','status']
-    end
+    end 
 
     def get(*args)
       args.each do |arg|
@@ -86,6 +86,10 @@ module Raven
     def initialize(operation)
       super
       self.set('username', Config.RAVEN_USERNAME)
+      self.set('RAPIVersion', Config.RAPI_VERSION)
+      self.set('RAPIInterface', Config.RAPI_INTERFACE)
+      self.set('RequestID', Config.RAVEN_PREFIX + SecureRandom.uuid.to_s)
+      self.set('Timestamp', Time.now.gmtime.strftime("%Y-%m-%dT%H:%M:%S.000Z"))
     end  
 
     def set(key, value)

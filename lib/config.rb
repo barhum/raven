@@ -46,5 +46,13 @@ end
 def RAVEN_DEBUG_OUTPUT 
   "off"
 end
- # on/off
+
+def RAPI_VERSION  
+  "2"
+end  
+    
+def RAPI_INTERFACE 
+  "Rails1.0"
+end   
+
 
