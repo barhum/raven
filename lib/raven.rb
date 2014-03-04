@@ -1,5 +1,6 @@
 require 'config.rb'
 require 'debugger'
+require 'digest/hmac'
 
 module Raven
   class RavenException < Exception
@@ -94,6 +95,20 @@ module Raven
 
     def set(key, value)
       @values[key] = value.to_s
+    end
+
+    def signature
+      data = Config.RAVEN_USERNAME + self.get('Timestamp') + self.get('RequestID')
+      if self.operation == 'submit'
+        data = data + self.get('PymtType', 'PaymentType') + (self.get('Amount') + self.get('Currency', 'CurrencyCode')).to_s
+      elsif self.operation == 'closefile'
+        data = data + self.get('Filename')
+      elsif self.operation == 'void'
+        data = data + self.get('TrackingNumber')
+      elsif self.operation == 'hello'
+        data = Config.RAVEN_USERNAME  
+      end  
+      h = Digest::HMAC.hexdigest(data, Config.RAVEN_SECRET, Digest::SHA1)
     end
   end 
 end 

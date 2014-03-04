@@ -60,7 +60,18 @@ describe Raven do
     pymtReq = Raven::RavenRequest.new('submit')
     pymtReq.values['username'].should eq "ernest"
     pymtReq.values['RAPIVersion'].should eq "2"
-    pymtReq.values['RAPIInterface'].should eq "Rails1.0"
+    pymtReq.values['RAPIInterface'].should eq "Rails1.0"  
+  end
+
+  it "should return a signature for the operation" do 
+    pymtReq = Raven::RavenRequest.new('submit')
+    pymtReq.set('PRN', '840033')
+    pymtReq.set('Currency', 'USD')
+    pymtReq.set('CardNumber', '4000000000000010')
+    pymtReq.set('PymtType', 'cc_debit')
+    pymtReq.set('ExpiryDate', '0919')
+    pymtReq.set('Amount', 2000)
+    pymtReq.signature.should eq "123s" 
   end
 end
 
