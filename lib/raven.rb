@@ -1,6 +1,7 @@
 require 'config.rb'
 require 'debugger'
 require 'digest/hmac'
+require 'uri'
 
 module Raven
   class RavenException < Exception
@@ -84,8 +85,11 @@ module Raven
   end
 
   class RavenRequest < Raven
+    attr_reader :ravenRequestString
+
     def initialize(operation)
       super
+      @ravenRequestString = nil
       self.set('username', Config.RAVEN_USERNAME)
       self.set('RAPIVersion', Config.RAPI_VERSION)
       self.set('RAPIInterface', Config.RAPI_INTERFACE)
@@ -110,6 +114,43 @@ module Raven
       end  
       h = Digest::HMAC.hexdigest(data, Config.RAVEN_SECRET, Digest::SHA1)
     end
+
+    def send
+      self.set('Signature', self.signature)
+      @ravenRequestString = URI::encode(self.values.to_s)
+
+      (httpResponseError, responseData) = self.postRequest
+    end
+
+    def postRequest
+      responseData = nil
+      httpResponseError = nil
+      
+      uri = (Config.RAVEN_GATEWAY + '/' + self.operation + self.ravenRequestString)
+      respondeData = open(uri)
+      return respondeData
+    end    
+    
+    #
+    # Sends the actual request once all the required parameters have been set.
+    # If required values are not set, it will throw an Exception listing the
+    # missing values.
+    #
+    # @throws    RavenNoResponseException if inquiry must be made
+    # @throws    RavenAuthentication if the response could be determined to 
+    #   originate with Raven
+    # @returns    RavenResponse object
+    #
+    # def send(self):
+    
+    #     self.set('Signature', self.signature())
+    #     self.ravenRequestString = urllib.urlencode(self.values)
+    #     self.log('Request string: ' + self.ravenRequestString)
+        
+    #     (httpResponseError, responseData) = self.postRequest()
+        
+    #     return RavenResponse(httpResponseError, responseData, self.operation)
+              
   end 
 end 
 

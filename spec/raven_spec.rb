@@ -67,11 +67,24 @@ describe Raven do
     pymtReq = Raven::RavenRequest.new('submit')
     pymtReq.set('PRN', '840033')
     pymtReq.set('Currency', 'USD')
-    pymtReq.set('CardNumber', '4000000000000010')
+    pymtReq.set('CardNumber', '4000000000000011')
     pymtReq.set('PymtType', 'cc_debit')
     pymtReq.set('ExpiryDate', '0919')
     pymtReq.set('Amount', 2000)
-    pymtReq.signature.should eq "123s" 
+    pymtReq.signature.length.should be 40
   end
+
+  it "should set the signature in values" do 
+    pymtReq = Raven::RavenRequest.new('submit')
+    pymtReq.set('PRN', '840033')
+    pymtReq.set('Currency', 'USD')
+    pymtReq.set('CardNumber', '4000000000000011')
+    pymtReq.set('PymtType', 'cc_debit')
+    pymtReq.set('ExpiryDate', '0919')
+    pymtReq.set('Amount', 2000)
+    pymtReq.send
+    pymtReq.values['Signature'].length.should be 40
+    pymtReq.postRequest.should eq 1
+  end  
 end
 
