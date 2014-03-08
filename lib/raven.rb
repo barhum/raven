@@ -1,5 +1,4 @@
 require 'config.rb'
-require 'debugger'
 require 'digest/hmac'
 require 'uri'
 
