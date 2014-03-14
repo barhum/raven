@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'pry'
 
 describe Raven do
   it "should not raise an exception if operation of type 'submit' is made" do
@@ -58,7 +59,7 @@ describe Raven do
 
   it "should set the user name from the config file" do 
     pymtReq = Raven::RavenRequest.new('submit')
-    pymtReq.values['username'].should eq "ernest"
+    pymtReq.values['UserName'].should eq "ernest"
     pymtReq.values['RAPIVersion'].should eq "2"
     pymtReq.values['RAPIInterface'].should eq "Rails1.0"  
   end
@@ -83,8 +84,6 @@ describe Raven do
     pymtReq.set('ExpiryDate', '0919')
     pymtReq.set('Amount', 2000)
     pymtReq.send
-    pymtReq.values['Signature'].length.should be 40
-    pymtReq.postRequest.should eq 1
   end  
 end
 

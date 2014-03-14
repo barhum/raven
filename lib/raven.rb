@@ -1,6 +1,6 @@
 require 'config.rb'
 require 'digest/hmac'
-require 'uri'
+require 'net/http'
 
 module Raven
   class RavenException < Exception
@@ -89,7 +89,7 @@ module Raven
     def initialize(operation)
       super
       @ravenRequestString = nil
-      self.set('username', Config.RAVEN_USERNAME)
+      self.set('UserName', Config.RAVEN_USERNAME)
       self.set('RAPIVersion', Config.RAPI_VERSION)
       self.set('RAPIInterface', Config.RAPI_INTERFACE)
       self.set('RequestID', Config.RAVEN_PREFIX + SecureRandom.uuid.to_s)
@@ -116,40 +116,46 @@ module Raven
 
     def send
       self.set('Signature', self.signature)
-      @ravenRequestString = URI::encode(self.values.to_s)
+      params = ""
+      
+      
+      self.values.each do |k, v| 
+        params = params + "&#{k.to_s}=#{v.to_s}" 
+      end  
+      @ravenRequestString = params
+      
+      binding.pry
+      httpResponseError, responseData = self.postRequest
+      return RavenResponse.new(httpResponseError, responseData, self.operation)
 
-      (httpResponseError, responseData) = self.postRequest
     end
 
     def postRequest
       responseData = nil
       httpResponseError = nil
       
-      uri = (Config.RAVEN_GATEWAY + '/' + self.operation + self.ravenRequestString)
-      respondeData = open(uri)
-      return respondeData
-    end    
-    
-    #
-    # Sends the actual request once all the required parameters have been set.
-    # If required values are not set, it will throw an Exception listing the
-    # missing values.
-    #
-    # @throws    RavenNoResponseException if inquiry must be made
-    # @throws    RavenAuthentication if the response could be determined to 
-    #   originate with Raven
-    # @returns    RavenResponse object
-    #
-    # def send(self):
-    
-    #     self.set('Signature', self.signature())
-    #     self.ravenRequestString = urllib.urlencode(self.values)
-    #     self.log('Request string: ' + self.ravenRequestString)
-        
-    #     (httpResponseError, responseData) = self.postRequest()
-        
-    #     return RavenResponse(httpResponseError, responseData, self.operation)
-              
+      begin
+        uri = URI.parse(Config.RAVEN_GATEWAY + '/' + self.operation)
+        http = Net::HTTP.new(uri.host, uri.port)
+        http.use_ssl = true
+        res = Net::HTTP::Post.new(uri.path, {'Content-Type' => 'application/x-www-form-urlencoded' })
+        res.body = self.ravenRequestString
+        responseData = http.request(res)
+      rescue
+        if NET::HTTPError
+          httpResponseError = NET::HTTPError
+        end    
+      end  
+
+      return httpResponseError, responseData
+    end            
+  end
+
+  class RavenResponse < Raven
+    def initialize(httpResponseError, ravenResponseData, operation)
+      @ravenResponseString = ravenResponseData.to_s       
+
+    end  
   end 
 end 
 

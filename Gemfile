@@ -15,5 +15,6 @@ gem 'debugger'
 gem 'pry'
 gem 'rspec'
 gem 'shoulda-matchers'
+gem 'faraday', :git => 'git://github.com/lostisland/faraday.git'
 
 
