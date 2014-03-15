@@ -1,6 +1,7 @@
 require 'config.rb'
 require 'digest/hmac'
 require 'net/http'
+require 'faraday'
 
 module Raven
   class RavenException < Exception
@@ -139,22 +140,25 @@ module Raven
     def postRequest
       responseData = nil
       httpResponseError = nil
+      uri = URI.parse(Config.RAVEN_GATEWAY + '/' + self.operation)
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = true
+      res = Net::HTTP::Post.new(uri.path, {'Content-Type' => 'application/x-www-form-urlencoded' })
+      res.body = self.ravenRequestString
       
       begin
-        uri = URI.parse(Config.RAVEN_GATEWAY + '/' + self.operation)
-        http = Net::HTTP.new(uri.host, uri.port)
-        http.use_ssl = true
-        res = Net::HTTP::Post.new(uri.path, {'Content-Type' => 'application/x-www-form-urlencoded' })
-        res.body = self.ravenRequestString
-        responseData = http.request(res)
-      rescue
-        if NET::HTTPError
-          httpResponseError = NET::HTTPError
-        end    
+        response = http.request(res)
+        if response.code == "200"
+          responseData = response.body
+        else
+          httpResponseError = response.code
+        end  
+      rescue SocketError
+        httpResponseError = "404"
       end  
 
       return httpResponseError, responseData
-    end            
+    end   
   end
 
   class RavenResponse < Raven
@@ -178,7 +182,7 @@ module Raven
       if (httpResponseError == nil)
         self.values['httpStatus'] = '200'
       else
-        self.values['httpStatus'] = httpResponseError.to_s
+        self.values['httpStatus'] = httpResponseError
       end 
     end 
   end 
