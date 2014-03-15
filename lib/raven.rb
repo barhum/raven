@@ -78,6 +78,12 @@ module Raven
       end   
     end
 
+    def log(message)
+      if (Config.RAVEN_DEBUG_OUTPUT == 'on')
+          print "<span style=\'background-color:orange\'>RAVEN: #{message}</span><br />'\n"
+      end
+    end    
+
     def printValues
       print @values.values 
     end  
@@ -117,14 +123,14 @@ module Raven
     def send
       self.set('Signature', self.signature)
       params = ""
-      
-      
+        
       self.values.each do |k, v| 
-        params = params + "&#{k.to_s}=#{v.to_s}" 
+        if v
+          params = params + "&#{k.to_s}=#{v.to_s}"
+        end   
       end  
       @ravenRequestString = params
       
-      binding.pry
       httpResponseError, responseData = self.postRequest
       return RavenResponse.new(httpResponseError, responseData, self.operation)
 
@@ -153,9 +159,28 @@ module Raven
 
   class RavenResponse < Raven
     def initialize(httpResponseError, ravenResponseData, operation)
-      @ravenResponseString = ravenResponseData.to_s       
+      super(operation)
+      @ravenResponseString = ravenResponseData.to_s 
+      self.setHttpHeader(httpResponseError)
 
-    end  
+      if self.get('httpStatus') == '200'
+        self.log('Received HTTP response 200')
+            # self.parseResponse()
+      elsif self.get('httpStatus') == '500'
+        self.log('Received HTTP response 500: Request may or may not have been processed, inquire.')     
+        raise RavenNoResponseException('inquire again')
+      else
+        self.log('Received HTTP response ' + self.get('httpStatus'))
+      end       
+    end 
+
+    def setHttpHeader(httpResponseError)    
+      if (httpResponseError == nil)
+        self.values['httpStatus'] = '200'
+      else
+        self.values['httpStatus'] = httpResponseError.to_s
+      end 
+    end 
   end 
 end 
 
