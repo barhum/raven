@@ -10,11 +10,10 @@ gemspec
 # Git. Remember to move these dependencies to your gemspec before releasing
 # your gem to rubygems.org.
 
-# To use debugger
-gem 'debugger'
+
 gem 'pry'
 gem 'rspec'
 gem 'shoulda-matchers'
-gem 'faraday', :git => 'git://github.com/lostisland/faraday.git'
+
 
 
