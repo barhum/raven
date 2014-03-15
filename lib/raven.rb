@@ -162,6 +162,8 @@ module Raven
   end
 
   class RavenResponse < Raven
+    attr_reader :ravenResponseString
+
     def initialize(httpResponseError, ravenResponseData, operation)
       super(operation)
       @ravenResponseString = ravenResponseData.to_s 
@@ -184,8 +186,52 @@ module Raven
       else
         self.values['httpStatus'] = httpResponseError
       end 
+    end
+
+    def getRequestResult
+      if (self.get('httpStatus') == '500')
+        return 'serverError'
+      else
+        return self.get('RequestResult')
+      end     
     end 
-  end 
+
+    def getRavenResponseString
+      self.ravenResponseString
+    end
+
+    def parseResponse
+      
+      paramAndReportPairs = self.ravenResponseString.split('\r', 1)
+      self.setResponseParameters(paramAndReportPairs[0])
+      if paramAndReportPairs.length == 2
+        self.setReportParameters(paramAndReportPairs[1])
+      end  
+      self.authenticate
+    end
+    
+    def setResponseParameters(responseParamData)
+      paramPairs = CGI::parse(responseParamData)
+      paramPairs.each do |k, v|
+        self.values[k] = v[0]
+      end
+    end
+
+    def setReportParameters(reportData)
+      self.values['Report'] = reportData
+    end  
+
+    def authenticate
+      if (self.verificationSignature != self.get('Signature'))
+        raise RavenAuthenticationException.new('Invalid Raven signature')
+      end
+    end
+
+    def verificationSignature
+      data = Config.RAVEN_USERNAME + self.get('Timestamp').to_s + self.get('RequestID').to_s    
+      h = Digest::HMAC.hexdigest(data, Config.RAVEN_SECRET, Digest::SHA1).to_s      
+    end       
+  end               
 end 
 
 

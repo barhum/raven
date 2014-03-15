@@ -85,5 +85,18 @@ describe Raven do
     pymtReq.set('Amount', 2000)
     pymtReq.send
   end  
+
+  it "should set the signature in values" do 
+    pymtReq = Raven::RavenRequest.new('submit')
+    pymtReq.set('PRN', '840033')
+    pymtReq.set('Currency', 'USD')
+    pymtReq.set('CardNumber', '4000000000000011')
+    pymtReq.set('PymtType', 'cc_debit')
+    pymtReq.set('ExpiryDate', '0919')
+    pymtReq.set('Amount', 2000)
+    response = pymtReq.send
+    response.parseResponse
+    response.getRequestResult.should eq 'ok'
+  end  
 end
 
