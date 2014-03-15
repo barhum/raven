@@ -1,7 +1,7 @@
 require 'config.rb'
 require 'digest/hmac'
 require 'net/http'
-require 'faraday'
+require 'cgi'
 
 module Raven
   class RavenException < Exception
@@ -200,8 +200,7 @@ module Raven
       self.ravenResponseString
     end
 
-    def parseResponse
-      
+    def parseResponse   
       paramAndReportPairs = self.ravenResponseString.split('\r', 1)
       self.setResponseParameters(paramAndReportPairs[0])
       if paramAndReportPairs.length == 2
