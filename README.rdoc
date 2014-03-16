@@ -1,4 +1,4 @@
-= Raven
+= Raven API Rails Integration
 
 Need to add a web interface demo
 
