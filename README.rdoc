@@ -1,4 +1,10 @@
 = Raven
 
+Need to add a web interface demo
+
+Need to write more tests :(
+
+Need to remove config.rb and let the user pass his own settings
+
 This project rocks and uses MIT-LICENSE.
 
