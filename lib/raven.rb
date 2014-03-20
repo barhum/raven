@@ -57,7 +57,7 @@ module Raven
   end  
 
   class Raven
-    attr_reader :values, :operation
+    attr_reader :values, :operation, :user
 
     def initialize(operation)
       @values = {}
@@ -87,7 +87,7 @@ module Raven
 
     def printValues
       print @values.values 
-    end  
+    end
   end
 
   class RavenRequest < Raven
@@ -195,10 +195,6 @@ module Raven
         return self.get('RequestResult')
       end     
     end 
-
-    def getRavenResponseString
-      self.ravenResponseString
-    end
 
     def parseResponse   
       paramAndReportPairs = self.ravenResponseString.split('\r', 1)
