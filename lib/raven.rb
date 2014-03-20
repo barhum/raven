@@ -122,6 +122,7 @@ module Raven
     end
 
     def send
+      binding.pry
       self.set('Signature', self.signature)
       params = ""
         
