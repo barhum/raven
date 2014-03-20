@@ -2,6 +2,10 @@
 
 demo at https://github.com/barhum/raven_demo
 
+more API info at:
+
+http://docs.pacnetservices.com/raven/api-guide/
+
 Need to write more tests :(
 
 Need to remove config.rb and let the user pass his own settings
