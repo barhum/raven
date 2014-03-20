@@ -1,6 +1,6 @@
 = Raven API Rails Integration
 
-Need to add a web interface demo
+demo at https://github.com/barhum/raven_demo
 
 Need to write more tests :(
 
