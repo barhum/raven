@@ -57,7 +57,7 @@ module Raven
   end  
 
   class Raven
-    attr_reader :values, :operation, :user
+    attr_reader :values, :operation
 
     def initialize(operation)
       @values = {}
@@ -171,7 +171,7 @@ module Raven
 
       if self.get('httpStatus') == '200'
         self.log('Received HTTP response 200')
-            # self.parseResponse()
+        self.parseResponse
       elsif self.get('httpStatus') == '500'
         self.log('Received HTTP response 500: Request may or may not have been processed, inquire.')     
         raise RavenNoResponseException('inquire again')
