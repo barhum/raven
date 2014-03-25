@@ -5,12 +5,6 @@ require 'cgi'
 require 'yaml'
 
 
-path = 'config/initializers/config.rb'
-
-if File.exist?(path)
-  require path
-end  
-
 module Raven
 
   class RavenException < Exception
