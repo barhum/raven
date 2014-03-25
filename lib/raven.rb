@@ -100,7 +100,7 @@ module Raven
       super
       @ravenRequestString = nil
       self.set('UserName', raven_config['user'])
-      self.set('RAPIVersion', raven_config['rapi_version')
+      self.set('RAPIVersion', raven_config['rapi_version'])
       self.set('RAPIInterface', raven_config['rapi_interface'])
       self.set('RequestID', raven_config['prefix'] + SecureRandom.uuid.to_s)
       self.set('Timestamp', Time.now.gmtime.strftime("%Y-%m-%dT%H:%M:%S.000Z"))
