@@ -105,10 +105,10 @@ module Raven
     def initialize(operation)
       super
       @ravenRequestString = nil
-      self.set('UserName', @user)
-      self.set('RAPIVersion', @rapi_version)
-      self.set('RAPIInterface', @rapi_interface)
-      self.set('RequestID', @prefix + SecureRandom.uuid.to_s)
+      self.set('UserName', Config.user)
+      self.set('RAPIVersion', Config.rapi_version)
+      self.set('RAPIInterface', Config.rapi_interface)
+      self.set('RequestID', Config.prefix + SecureRandom.uuid.to_s)
       self.set('Timestamp', Time.now.gmtime.strftime("%Y-%m-%dT%H:%M:%S.000Z"))
     end  
 
@@ -117,7 +117,7 @@ module Raven
     end
 
     def signature
-      data = raven_config['user'] + self.get('Timestamp') + self.get('RequestID')
+      data = Config.user + self.get('Timestamp') + self.get('RequestID')
       if self.operation == 'submit'
         data = data + self.get('PymtType', 'PaymentType') + (self.get('Amount') + self.get('Currency', 'CurrencyCode')).to_s
       elsif self.operation == 'closefile'
@@ -127,7 +127,7 @@ module Raven
       elsif self.operation == 'hello'
         data = raven_config['user']  
       end  
-      h = Digest::HMAC.hexdigest(data, @secret, Digest::SHA1)
+      h = Digest::HMAC.hexdigest(data, Config.secret, Digest::SHA1)
     end
 
     def send
@@ -149,7 +149,7 @@ module Raven
     def postRequest
       responseData = nil
       httpResponseError = nil
-      uri = URI.parse(raven_config['gateway'] + '/' + self.operation)
+      uri = URI.parse(Config.gateway + '/' + self.operation)
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true
       res = Net::HTTP::Post.new(uri.path, {'Content-Type' => 'application/x-www-form-urlencoded' })
@@ -232,8 +232,8 @@ module Raven
     end
 
     def verificationSignature
-      data = @user + self.get('Timestamp').to_s + self.get('RequestID').to_s    
-      h = Digest::HMAC.hexdigest(data, @secret, Digest::SHA1).to_s      
+      data = Config.user + self.get('Timestamp').to_s + self.get('RequestID').to_s    
+      h = Digest::HMAC.hexdigest(data, Config.secret, Digest::SHA1).to_s      
     end       
   end               
 end 
