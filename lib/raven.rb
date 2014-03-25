@@ -57,7 +57,39 @@ module Raven
 
     # Abstract class to handle common functionality between RavenRequest and 
     # RavenResponse.     
-  end  
+  end 
+
+  class RavenConfig
+    att_reader :user, :secret, :gateway, :prefix, :raven_debug, :rapi_version, :rapi_interface
+
+    def setUser(user)
+      @user = user
+    end  
+
+    def setSecret(secret)  
+      @secret = secret
+    end
+
+    def setGateway(gateway)  
+      @gateway =  gateway
+    end
+
+    def setPrefix(prefix)
+      @prefix = prefix
+    end
+
+    def setRavenDebug(debug)
+      @raven_debug = debug
+    end
+
+    def rapi_version   
+      @rapi_version =  2
+    end
+
+    def rapi_interface
+      @rapi_interface = 'rails0.1'
+    end
+  end 
 
   class Raven
     attr_reader :values, :operation
