@@ -103,6 +103,7 @@ PLATFORMS
 
 DEPENDENCIES
   pry
+  rails
   raven!
   rspec
   shoulda-matchers

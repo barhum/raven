@@ -14,6 +14,7 @@ gemspec
 gem 'pry'
 gem 'rspec'
 gem 'shoulda-matchers'
+gem 'rails'
 
 
 
