@@ -2,6 +2,7 @@ require 'config.rb'
 require 'digest/hmac'
 require 'net/http'
 require 'cgi'
+require 'yaml'
 
 path = 'config/initializers/raven_config.yml'
 
