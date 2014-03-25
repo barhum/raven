@@ -60,7 +60,7 @@ module Raven
   end 
 
   class RavenConfig
-    att_reader :user, :secret, :gateway, :prefix, :raven_debug, :rapi_version, :rapi_interface
+    attr_reader :user, :secret, :gateway, :prefix, :raven_debug, :rapi_version, :rapi_interface
 
     def setUser(user)
       @user = user
