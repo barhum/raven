@@ -96,7 +96,7 @@ module Raven
     def initialize(operation)
       super
       @ravenRequestString = nil
-      self.set('UserName', Config.RAVEN_USERNAME)
+      self.set('UserName', ravenUser)
       self.set('RAPIVersion', Config.RAPI_VERSION)
       self.set('RAPIInterface', Config.RAPI_INTERFACE)
       self.set('RequestID', Config.RAVEN_PREFIX + SecureRandom.uuid.to_s)
