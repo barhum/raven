@@ -83,7 +83,7 @@ module Raven
     end
 
     def log(message)
-      if (@raven_debug == 'on')
+      if (RavenConfig.raven_debug == 'on')
           print "<span style=\'background-color:orange\'>RAVEN: #{message}</span><br />'\n"
       end
     end    
@@ -99,10 +99,10 @@ module Raven
     def initialize(operation)
       super
       @ravenRequestString = nil
-      self.set('UserName', Config.user)
-      self.set('RAPIVersion', Config.rapi_version)
-      self.set('RAPIInterface', Config.rapi_interface)
-      self.set('RequestID', Config.prefix + SecureRandom.uuid.to_s)
+      self.set('UserName', RavenConfig.user)
+      self.set('RAPIVersion', RavenConfig.rapi_version)
+      self.set('RAPIInterface', RavenConfig.rapi_interface)
+      self.set('RequestID', RavenConfig.prefix + SecureRandom.uuid.to_s)
       self.set('Timestamp', Time.now.gmtime.strftime("%Y-%m-%dT%H:%M:%S.000Z"))
     end  
 
@@ -111,7 +111,7 @@ module Raven
     end
 
     def signature
-      data = Config.user + self.get('Timestamp') + self.get('RequestID')
+      data = RavenConfig.user + self.get('Timestamp') + self.get('RequestID')
       if self.operation == 'submit'
         data = data + self.get('PymtType', 'PaymentType') + (self.get('Amount') + self.get('Currency', 'CurrencyCode')).to_s
       elsif self.operation == 'closefile'
@@ -121,7 +121,7 @@ module Raven
       elsif self.operation == 'hello'
         data = raven_config['user']  
       end  
-      h = Digest::HMAC.hexdigest(data, Config.secret, Digest::SHA1)
+      h = Digest::HMAC.hexdigest(data, RavenConfig.secret, Digest::SHA1)
     end
 
     def send
@@ -143,7 +143,7 @@ module Raven
     def postRequest
       responseData = nil
       httpResponseError = nil
-      uri = URI.parse(Config.gateway + '/' + self.operation)
+      uri = URI.parse(RavenConfig.gateway + '/' + self.operation)
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true
       res = Net::HTTP::Post.new(uri.path, {'Content-Type' => 'application/x-www-form-urlencoded' })
@@ -226,8 +226,8 @@ module Raven
     end
 
     def verificationSignature
-      data = Config.user + self.get('Timestamp').to_s + self.get('RequestID').to_s    
-      h = Digest::HMAC.hexdigest(data, Config.secret, Digest::SHA1).to_s      
+      data = RavenConfig.user + self.get('Timestamp').to_s + self.get('RequestID').to_s    
+      h = Digest::HMAC.hexdigest(data, RavenConfig.secret, Digest::SHA1).to_s      
     end       
   end               
 end 

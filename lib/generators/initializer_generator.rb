@@ -2,7 +2,7 @@ class InitializerGenerator < Rails::Generators::Base
   def create_initializer_file
     out_file = File.new("config/initializers/config.rb", "w+")
     out_file.puts(
-     "class Config
+     "class RavenConfig
         def user
           @user = 'ernest'
         end
