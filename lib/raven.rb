@@ -4,13 +4,6 @@ require 'net/http'
 require 'cgi'
 
 module Raven
-  
-  class InitializerGenerator < Rails::Generators::Base
-    def create_initializer_file
-      create_file "config/initializers/initializer.rb", "# Add initialization content here"
-    end
-  end
-
   class RavenException < Exception
     "A problem has occurred with some aspect of Raven processing."
     #
