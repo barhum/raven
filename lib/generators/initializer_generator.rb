@@ -1,6 +1,6 @@
 class InitializerGenerator < Rails::Generators::Base
   def create_initializer_file
-    out_file = File.new("config/initializers/raven_config.rb", "w")
+    out_file = File.new("config/initializers/raven_config.rb", "w+")
     out_file.puts do 
      "@user = 'ernest'
       @secret = 'all good men die young'
