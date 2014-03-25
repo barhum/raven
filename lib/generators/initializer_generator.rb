@@ -1,7 +1,7 @@
 class InitializerGenerator < Rails::Generators::Base
   def create_initializer_file
     out_file = File.new("config/initializers/raven_config.rb", "w")
-    out_file.puts do 
+    out_file.write do 
       @user = 'ernest'
       @secret = 'all good men die young'
       @gateway =  'https://demo.pacnetservices.com/realtime'
