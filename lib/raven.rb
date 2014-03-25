@@ -3,7 +3,10 @@ require 'digest/hmac'
 require 'net/http'
 require 'cgi'
 
+raven_config = YAML::load(File.open('config/initializers/raven_config.yml'))
+
 module Raven
+
   class RavenException < Exception
     "A problem has occurred with some aspect of Raven processing."
     #
@@ -96,7 +99,7 @@ module Raven
     def initialize(operation)
       super
       @ravenRequestString = nil
-      self.set('UserName', ravenUser)
+      self.set('UserName', raven_config['user'])
       self.set('RAPIVersion', Config.RAPI_VERSION)
       self.set('RAPIInterface', Config.RAPI_INTERFACE)
       self.set('RequestID', Config.RAVEN_PREFIX + SecureRandom.uuid.to_s)
