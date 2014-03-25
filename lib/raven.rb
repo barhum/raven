@@ -100,9 +100,9 @@ module Raven
       super
       @ravenRequestString = nil
       self.set('UserName', raven_config['user'])
-      self.set('RAPIVersion', Config.RAPI_VERSION)
-      self.set('RAPIInterface', Config.RAPI_INTERFACE)
-      self.set('RequestID', Config.RAVEN_PREFIX + SecureRandom.uuid.to_s)
+      self.set('RAPIVersion', raven_config['rapi_version')
+      self.set('RAPIInterface', raven_config['rapi_interface'])
+      self.set('RequestID', raven_config['prefix'] + SecureRandom.uuid.to_s)
       self.set('Timestamp', Time.now.gmtime.strftime("%Y-%m-%dT%H:%M:%S.000Z"))
     end  
 
@@ -111,7 +111,7 @@ module Raven
     end
 
     def signature
-      data = Config.RAVEN_USERNAME + self.get('Timestamp') + self.get('RequestID')
+      data = raven_config['user'] + self.get('Timestamp') + self.get('RequestID')
       if self.operation == 'submit'
         data = data + self.get('PymtType', 'PaymentType') + (self.get('Amount') + self.get('Currency', 'CurrencyCode')).to_s
       elsif self.operation == 'closefile'
@@ -119,9 +119,9 @@ module Raven
       elsif self.operation == 'void'
         data = data + self.get('TrackingNumber')
       elsif self.operation == 'hello'
-        data = Config.RAVEN_USERNAME  
+        data = raven_config['user']  
       end  
-      h = Digest::HMAC.hexdigest(data, Config.RAVEN_SECRET, Digest::SHA1)
+      h = Digest::HMAC.hexdigest(data, raven_config['secret'], Digest::SHA1)
     end
 
     def send
@@ -143,7 +143,7 @@ module Raven
     def postRequest
       responseData = nil
       httpResponseError = nil
-      uri = URI.parse(Config.RAVEN_GATEWAY + '/' + self.operation)
+      uri = URI.parse(raven_config['gateway'] + '/' + self.operation)
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true
       res = Net::HTTP::Post.new(uri.path, {'Content-Type' => 'application/x-www-form-urlencoded' })
@@ -226,8 +226,8 @@ module Raven
     end
 
     def verificationSignature
-      data = Config.RAVEN_USERNAME + self.get('Timestamp').to_s + self.get('RequestID').to_s    
-      h = Digest::HMAC.hexdigest(data, Config.RAVEN_SECRET, Digest::SHA1).to_s      
+      data = raven_config['user'] + self.get('Timestamp').to_s + self.get('RequestID').to_s    
+      h = Digest::HMAC.hexdigest(data, raven_config['secret'], Digest::SHA1).to_s      
     end       
   end               
 end 
