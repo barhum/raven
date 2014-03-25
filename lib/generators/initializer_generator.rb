@@ -6,7 +6,7 @@ class InitializerGenerator < Rails::Generators::Base
        gateway: https://demo.pacnetservices.com/realtime \n
        prefix: TEST \n
        raven_debug: off \n
-       rapi_version: 2 \n
+       rapi_version: V2 \n
        rapi_interface: rails0.1"
     end  
   end
