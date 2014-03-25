@@ -3,7 +3,11 @@ require 'digest/hmac'
 require 'net/http'
 require 'cgi'
 
-raven_config = YAML::load(File.open('config/initializers/raven_config.yml'))
+path = 'config/initializers/raven_config.yml'
+
+if File.exist?(path)
+  raven_config = YAML::load(File.open(path))
+end  
 
 module Raven
 
