@@ -4,10 +4,11 @@ require 'net/http'
 require 'cgi'
 require 'yaml'
 
-path = 'config/initializers/raven_config.yml'
+
+path = 'config/initializers/raven_config.rb'
 
 if File.exist?(path)
-  raven_config = YAML::load(File.open(path))
+  require path
 end  
 
 module Raven
@@ -88,7 +89,7 @@ module Raven
     end
 
     def log(message)
-      if (Config.RAVEN_DEBUG_OUTPUT == 'on')
+      if (@raven_debug == 'on')
           print "<span style=\'background-color:orange\'>RAVEN: #{message}</span><br />'\n"
       end
     end    
@@ -104,10 +105,10 @@ module Raven
     def initialize(operation)
       super
       @ravenRequestString = nil
-      self.set('UserName', raven_config['user'])
-      self.set('RAPIVersion', raven_config['rapi_version'])
-      self.set('RAPIInterface', raven_config['rapi_interface'])
-      self.set('RequestID', raven_config['prefix'] + SecureRandom.uuid.to_s)
+      self.set('UserName', @user)
+      self.set('RAPIVersion', @rapi_version)
+      self.set('RAPIInterface', @rapi_interface)
+      self.set('RequestID', @prefix + SecureRandom.uuid.to_s)
       self.set('Timestamp', Time.now.gmtime.strftime("%Y-%m-%dT%H:%M:%S.000Z"))
     end  
 
@@ -126,7 +127,7 @@ module Raven
       elsif self.operation == 'hello'
         data = raven_config['user']  
       end  
-      h = Digest::HMAC.hexdigest(data, raven_config['secret'], Digest::SHA1)
+      h = Digest::HMAC.hexdigest(data, @secret, Digest::SHA1)
     end
 
     def send
@@ -231,8 +232,8 @@ module Raven
     end
 
     def verificationSignature
-      data = raven_config['user'] + self.get('Timestamp').to_s + self.get('RequestID').to_s    
-      h = Digest::HMAC.hexdigest(data, raven_config['secret'], Digest::SHA1).to_s      
+      data = @user + self.get('Timestamp').to_s + self.get('RequestID').to_s    
+      h = Digest::HMAC.hexdigest(data, @secret, Digest::SHA1).to_s      
     end       
   end               
 end 

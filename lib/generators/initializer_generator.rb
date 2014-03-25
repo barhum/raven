@@ -1,13 +1,13 @@
 class InitializerGenerator < Rails::Generators::Base
   def create_initializer_file
-    create_file "config/initializers/raven_config.yml" do 
-      "user: ernest \n
-       secret: all good men die young \n
-       gateway: https://demo.pacnetservices.com/realtime \n
-       prefix: TEST \n
-       raven_debug: off \n
-       rapi_version: V2 \n
-       rapi_interface: rails0.1"
+    create_file "config/initializers/raven_config.rb" do 
+      @user = 'ernest'
+      @secret = 'all good men die young'
+      @gateway =  'https://demo.pacnetservices.com/realtime'
+      @prefix = 'TEST'
+      @raven_debug = 'off' 
+      @rapi_version =  2 
+      @rapi_interface = "rails0.1"
     end  
   end
 end
