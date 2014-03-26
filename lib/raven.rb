@@ -101,7 +101,7 @@ module Raven
         raise RavenNoSuchOperationException("#{operation} is an unsupported operation.")
       end
       @operation = operation
-      @ravenConfig = RavenConfig.new         
+      @ravenConfig = RavenConfig.instance.new         
     end
 
     def ravenOperations
