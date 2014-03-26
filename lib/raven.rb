@@ -2,8 +2,6 @@ require 'config.rb'
 require 'digest/hmac'
 require 'net/http'
 require 'cgi'
-require 'yaml'
-
 
 module Raven
 
@@ -59,38 +57,6 @@ module Raven
     # RavenResponse.     
   end 
 
-  class RavenConfig
-    include Singleton
-    attr_reader :user, :secret, :gateway, :prefix, :raven_debug, :rapi_version, :rapi_interface
-
-    def setUser(user)
-      @user = user
-    end  
-
-    def setSecret(secret)  
-      @secret = secret
-    end
-
-    def setGateway(gateway)  
-      @gateway =  gateway
-    end
-
-    def setPrefix(prefix)
-      @prefix = prefix
-    end
-
-    def setRavenDebug(debug)
-      @raven_debug = debug
-    end
-
-    def rapi_version   
-      @rapi_version =  2
-    end
-
-    def rapi_interface
-      @rapi_interface = 'rails0.1'
-    end
-  end 
 
   class Raven
     attr_reader :values, :operation, :ravenConfig
@@ -101,7 +67,7 @@ module Raven
         raise RavenNoSuchOperationException("#{operation} is an unsupported operation.")
       end
       @operation = operation
-      @ravenConfig = RavenConfig.instance.new         
+      @ravenConfig = Rails.application.config 
     end
 
     def ravenOperations
@@ -117,7 +83,7 @@ module Raven
     end
 
     def log(message)
-      if (RavenConfig.raven_debug == 'on')
+      if (@ravenConfig.ravenDebug == 'on')
           print "<span style=\'background-color:orange\'>RAVEN: #{message}</span><br />'\n"
       end
     end    
@@ -134,8 +100,8 @@ module Raven
       super
       @ravenRequestString = nil
       self.set('UserName', @ravenConfig.user)
-      self.set('RAPIVersion', @ravenConfig.rapi_version)
-      self.set('RAPIInterface', @ravenConfig.rapi_interface)
+      self.set('RAPIVersion', @ravenConfig.rapiVersion)
+      self.set('RAPIInterface', @ravenConfig.rapiInterface)
       self.set('RequestID', @ravenConfig.prefix + SecureRandom.uuid.to_s)
       self.set('Timestamp', Time.now.gmtime.strftime("%Y-%m-%dT%H:%M:%S.000Z"))
     end  
