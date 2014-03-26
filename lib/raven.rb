@@ -93,14 +93,15 @@ module Raven
   end 
 
   class Raven
-    attr_reader :values, :operation
+    attr_reader :values, :operation, :ravenConfig
 
     def initialize(operation)
       @values = {}
       if !self.ravenOperations.include?(operation.to_s)
         raise RavenNoSuchOperationException("#{operation} is an unsupported operation.")
       end
-      @operation = operation         
+      @operation = operation
+      @ravenConfig = RavenConfig.new         
     end
 
     def ravenOperations
@@ -132,10 +133,10 @@ module Raven
     def initialize(operation)
       super
       @ravenRequestString = nil
-      self.set('UserName', RavenConfig.user)
-      self.set('RAPIVersion', RavenConfig.rapi_version)
-      self.set('RAPIInterface', RavenConfig.rapi_interface)
-      self.set('RequestID', RavenConfig.prefix + SecureRandom.uuid.to_s)
+      self.set('UserName', @ravenConfig.user)
+      self.set('RAPIVersion', @ravenConfig.rapi_version)
+      self.set('RAPIInterface', @ravenConfig.rapi_interface)
+      self.set('RequestID', @ravenConfig.prefix + SecureRandom.uuid.to_s)
       self.set('Timestamp', Time.now.gmtime.strftime("%Y-%m-%dT%H:%M:%S.000Z"))
     end  
 
@@ -144,7 +145,7 @@ module Raven
     end
 
     def signature
-      data = RavenConfig.user + self.get('Timestamp') + self.get('RequestID')
+      data = @ravenConfig.user + self.get('Timestamp') + self.get('RequestID')
       if self.operation == 'submit'
         data = data + self.get('PymtType', 'PaymentType') + (self.get('Amount') + self.get('Currency', 'CurrencyCode')).to_s
       elsif self.operation == 'closefile'
@@ -154,7 +155,7 @@ module Raven
       elsif self.operation == 'hello'
         data = raven_config['user']  
       end  
-      h = Digest::HMAC.hexdigest(data, RavenConfig.secret, Digest::SHA1)
+      h = Digest::HMAC.hexdigest(data, @ravenConfig.secret, Digest::SHA1)
     end
 
     def send
@@ -176,7 +177,7 @@ module Raven
     def postRequest
       responseData = nil
       httpResponseError = nil
-      uri = URI.parse(RavenConfig.gateway + '/' + self.operation)
+      uri = URI.parse(@ravenConfig.gateway + '/' + self.operation)
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true
       res = Net::HTTP::Post.new(uri.path, {'Content-Type' => 'application/x-www-form-urlencoded' })
@@ -259,8 +260,8 @@ module Raven
     end
 
     def verificationSignature
-      data = RavenConfig.user + self.get('Timestamp').to_s + self.get('RequestID').to_s    
-      h = Digest::HMAC.hexdigest(data, RavenConfig.secret, Digest::SHA1).to_s      
+      data = @ravenConfig.user + self.get('Timestamp').to_s + self.get('RequestID').to_s    
+      h = Digest::HMAC.hexdigest(data, @ravenConfig.secret, Digest::SHA1).to_s      
     end       
   end               
 end 
