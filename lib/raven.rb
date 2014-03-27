@@ -152,8 +152,6 @@ module Raven
       res = Net::HTTP::Post.new(uri.path, {'Content-Type' => 'application/x-www-form-urlencoded' })
       res.body = self.ravenRequestString
 
-      binding.pry
-      
       begin
         response = http.request(res)
         if response.code == "200"
