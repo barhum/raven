@@ -102,7 +102,6 @@ module Raven
     def initialize(operation)
       super
       @ravenRequestString = nil
-      binding.pry
       self.set('UserName', self.ravenConfig.user)
       self.set('RAPIVersion', self.ravenConfig.rapiVersion)
       self.set('RAPIInterface', self.ravenConfig.rapiInterface)
@@ -140,6 +139,7 @@ module Raven
       @ravenRequestString = params
       
       httpResponseError, responseData = self.postRequest
+      binding.pry
       return RavenResponse.new(httpResponseError, responseData, self.operation)
 
     end
