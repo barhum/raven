@@ -139,13 +139,11 @@ module Raven
       @ravenRequestString = params
       
       httpResponseError, responseData = self.postRequest
-      binding.pry
       return RavenResponse.new(httpResponseError, responseData, self.operation)
 
     end
 
     def postRequest
-      binding.pry
       responseData = nil
       httpResponseError = nil
       uri = URI.parse(self.ravenConfig.gateway + '/' + self.operation)
@@ -153,6 +151,8 @@ module Raven
       http.use_ssl = true
       res = Net::HTTP::Post.new(uri.path, {'Content-Type' => 'application/x-www-form-urlencoded' })
       res.body = self.ravenRequestString
+
+      binding.pry
       
       begin
         response = http.request(res)
