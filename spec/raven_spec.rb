@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'pry'
 
 describe Raven do
   it "should not raise an exception if operation of type 'submit' is made" do
@@ -13,7 +12,6 @@ describe Raven do
 
   it "should set the current operation of submit" do
     pymtReq = Raven::Raven.new('submit')
-    binding.pry
     pymtReq.operation.should eq 'submit'
   end 
 
