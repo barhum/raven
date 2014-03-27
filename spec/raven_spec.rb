@@ -7,7 +7,7 @@ describe Raven do
   end
 
   it "should raise an exception if operation of type 'wrong' is made" do
-    expect { Raven::Raven.new('wrong') }.to raise_exception
+    expect { Raven::Raven.new('wrong') }.to raise_exception(Raven::NoSuchOperationError)
   end
 
   it "should set the current operation of submit" do
