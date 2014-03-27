@@ -61,13 +61,14 @@ module Raven
   class Raven
     attr_reader :values, :operation, :ravenConfig
 
+    @ravenConfig = Rails.application.config 
+
     def initialize(operation)
       @values = {}
       if !self.ravenOperations.include?(operation.to_s)
         raise RavenNoSuchOperationException("#{operation} is an unsupported operation.")
       end
       @operation = operation
-      @ravenConfig = Rails.application.config 
     end
 
     def ravenOperations
