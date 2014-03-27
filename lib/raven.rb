@@ -121,7 +121,7 @@ module Raven
       elsif self.operation == 'void'
         data = data + self.get('TrackingNumber')
       elsif self.operation == 'hello'
-        data = raven_config['user']  
+        data = self.ravenConfig.user  
       end  
       h = Digest::HMAC.hexdigest(data, self.ravenConfig.secret, Digest::SHA1)
     end
