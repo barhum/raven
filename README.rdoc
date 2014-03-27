@@ -1,14 +1,23 @@
 = Raven API Rails Integration
 
+Setup:
+
+config/environments/*
+
+  config.user = "ernest"
+  config.secret = 'all good men die young'
+  config.gateway = "https://demo.pacnetservices.com/realtime"
+  config.prefix = "TEST"
+  config.ravenDebug = "off"
+  config.rapiVersion = "2"
+  config.rapiInterface = "Rails0.1"
+
 demo at https://github.com/barhum/raven_demo
 
 more API info at:
 
 http://docs.pacnetservices.com/raven/api-guide/
 
-Need to write more tests :(
-
-Need to remove config.rb and let the user pass his own settings
 
 This project rocks and uses MIT-LICENSE.
 
