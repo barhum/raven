@@ -69,9 +69,7 @@ module Raven
       @operation = operation
     end
 
-    def ravenConfig
-      @ravenConfig = Rails.application.config
-    end  
+
 
     def ravenOperations
       @ravenOperations = ['submit','closefile','response','void','hello','payments','events','status']
@@ -107,6 +105,10 @@ module Raven
       self.set('RAPIInterface', @ravenConfig.rapiInterface)
       self.set('RequestID', @ravenConfig.prefix + SecureRandom.uuid.to_s)
       self.set('Timestamp', Time.now.gmtime.strftime("%Y-%m-%dT%H:%M:%S.000Z"))
+    end  
+
+    def ravenConfig
+      @ravenConfig = Rails.application.config
     end  
 
     def set(key, value)
