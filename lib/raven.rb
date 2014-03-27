@@ -59,9 +59,7 @@ module Raven
 
 
   class Raven
-    attr_reader :values, :operation, :ravenConfig
-
-    @ravenConfig = Rails.application.config 
+    attr_reader :values, :operation
 
     def initialize(operation)
       @values = {}
@@ -70,6 +68,10 @@ module Raven
       end
       @operation = operation
     end
+
+    def ravenConfig
+      @ravenConfig = Rails.application.config
+    end  
 
     def ravenOperations
       @ravenOperations = ['submit','closefile','response','void','hello','payments','events','status']
