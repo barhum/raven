@@ -100,15 +100,11 @@ module Raven
     def initialize(operation)
       super
       @ravenRequestString = nil
-      self.set('UserName', @ravenConfig.user)
-      self.set('RAPIVersion', @ravenConfig.rapiVersion)
-      self.set('RAPIInterface', @ravenConfig.rapiInterface)
-      self.set('RequestID', @ravenConfig.prefix + SecureRandom.uuid.to_s)
+      self.set('UserName', self.ravenConfig.user)
+      self.set('RAPIVersion', self.ravenConfig.rapiVersion)
+      self.set('RAPIInterface', self.ravenConfig.rapiInterface)
+      self.set('RequestID', self.ravenConfig.prefix + SecureRandom.uuid.to_s)
       self.set('Timestamp', Time.now.gmtime.strftime("%Y-%m-%dT%H:%M:%S.000Z"))
-    end  
-
-    def ravenConfig
-      @ravenConfig = Rails.application.config
     end  
 
     def set(key, value)
@@ -126,7 +122,7 @@ module Raven
       elsif self.operation == 'hello'
         data = raven_config['user']  
       end  
-      h = Digest::HMAC.hexdigest(data, @ravenConfig.secret, Digest::SHA1)
+      h = Digest::HMAC.hexdigest(data, self.ravenConfig.secret, Digest::SHA1)
     end
 
     def send
@@ -148,7 +144,7 @@ module Raven
     def postRequest
       responseData = nil
       httpResponseError = nil
-      uri = URI.parse(@ravenConfig.gateway + '/' + self.operation)
+      uri = URI.parse(self.ravenConfig.gateway + '/' + self.operation)
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true
       res = Net::HTTP::Post.new(uri.path, {'Content-Type' => 'application/x-www-form-urlencoded' })
@@ -231,8 +227,8 @@ module Raven
     end
 
     def verificationSignature
-      data = @ravenConfig.user + self.get('Timestamp').to_s + self.get('RequestID').to_s    
-      h = Digest::HMAC.hexdigest(data, @ravenConfig.secret, Digest::SHA1).to_s      
+      data = self.ravenConfig.user + self.get('Timestamp').to_s + self.get('RequestID').to_s    
+      h = Digest::HMAC.hexdigest(data, self.ravenConfig.secret, Digest::SHA1).to_s      
     end       
   end               
 end 
