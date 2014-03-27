@@ -145,6 +145,7 @@ module Raven
     end
 
     def postRequest
+      binding.pry
       responseData = nil
       httpResponseError = nil
       uri = URI.parse(self.ravenConfig.gateway + '/' + self.operation)
