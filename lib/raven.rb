@@ -1,4 +1,3 @@
-require 'config.rb'
 require 'digest/hmac'
 require 'net/http'
 require 'cgi'
