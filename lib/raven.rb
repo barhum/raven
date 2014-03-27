@@ -86,7 +86,7 @@ module Raven
     end
 
     def log(message)
-      if (@ravenConfig.ravenDebug == 'on')
+      if (self.ravenConfig.ravenDebug == 'on')
           print "<span style=\'background-color:orange\'>RAVEN: #{message}</span><br />'\n"
       end
     end    
