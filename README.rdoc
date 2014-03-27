@@ -9,8 +9,6 @@ config/environments/*
   config.gateway = "https://demo.pacnetservices.com/realtime"
   config.prefix = "TEST"
   config.ravenDebug = "off"
-  config.rapiVersion = "2"
-  config.rapiInterface = "Rails0.1"
 
 demo at https://github.com/barhum/raven_demo
 
