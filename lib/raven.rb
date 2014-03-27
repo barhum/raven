@@ -102,6 +102,7 @@ module Raven
     def initialize(operation)
       super
       @ravenRequestString = nil
+      binding.pry
       self.set('UserName', @ravenConfig.user)
       self.set('RAPIVersion', @ravenConfig.rapiVersion)
       self.set('RAPIInterface', @ravenConfig.rapiInterface)
