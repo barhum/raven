@@ -1,6 +1,7 @@
 require 'digest/hmac'
 require 'net/http'
 require 'cgi'
+require 'securerandom'
 
 module Raven
 
@@ -56,6 +57,18 @@ module Raven
     # RavenResponse.     
   end 
 
+  Config = Struct.new(
+    :gateway,
+    :user,
+    :secret,
+    :prefix,
+    :ravenDebug,
+    )
+  def self.config(&block)
+    @@config ||= Config.new
+    yield @@config if block
+    @@config
+  end
 
   class Raven
     attr_reader :values, :operation, :ravenConfig
@@ -69,7 +82,7 @@ module Raven
     end
 
     def ravenConfig
-      @ravenConfig = Rails.application.config
+      @ravenConfig ||= ::Raven.config
     end  
 
     def ravenOperations
