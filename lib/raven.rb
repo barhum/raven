@@ -1,10 +1,11 @@
 require 'digest/hmac'
 require 'net/http'
 require 'cgi'
+require 'securerandom'
 
 module Raven
 
-  class RavenException < Exception
+  class ApiError < StandardError
     "A problem has occurred with some aspect of Raven processing."
     #
     # Raven is not properly configured, probably due to a missing configuration 
@@ -13,7 +14,7 @@ module Raven
     #  
   end
   
-  class RavenConfigurationException < RavenException
+  class ConfigurationError < ApiError
     " Raven is not properly configured, probably due to a missing
     configuration file or absent mandatory configuration parameter 
     (see http://docs.deepcovelabs.com/raven/api-guide/)."
@@ -25,7 +26,7 @@ module Raven
     #
   end
 
-  class RavenNoSuchOperationException < RavenException
+  class NoSuchOperationError < ApiError
         " A requested Raven operation is not defined in the targeted version 
     of the API, as specified by the request parameter #{'insert rapiversion here'} (see
     http://docs.deepcovelabs.com/raven/api-guide/)."
@@ -39,7 +40,7 @@ module Raven
     #
   end
 
-  class RavenNoResponseException < RavenException
+  class NoResponseError < ApiError
     " This exception will be thrown if no response was received from the
     Raven system. This may be due to network issues or if there was a 
     server 500 errror. If this exception is thrown you should make a
@@ -49,13 +50,25 @@ module Raven
     # A Raven operation or response was not properly authenticated.
   end
 
-  class RavenAuthenticationException < RavenException
+  class AuthenticationError < ApiError
     " A Raven operation or response was not properly authenticated."
 
     # Abstract class to handle common functionality between RavenRequest and 
     # RavenResponse.     
   end 
 
+  Config = Struct.new(
+    :gateway,
+    :user,
+    :secret,
+    :prefix,
+    :ravenDebug,
+    )
+  def self.config(&block)
+    @@config ||= Config.new
+    yield @@config if block
+    @@config
+  end
 
   class Raven
     attr_reader :values, :operation, :ravenConfig
@@ -63,13 +76,13 @@ module Raven
     def initialize(operation)
       @values = {}
       if !self.ravenOperations.include?(operation.to_s)
-        raise RavenNoSuchOperationException("#{operation} is an unsupported operation.")
+        raise NoSuchOperationError.new("#{operation} is an unsupported operation.")
       end
       @operation = operation
     end
 
     def ravenConfig
-      @ravenConfig = Rails.application.config
+      @ravenConfig ||= ::Raven.config
     end  
 
     def ravenOperations
@@ -179,7 +192,7 @@ module Raven
         self.parseResponse
       elsif self.get('httpStatus') == '500'
         self.log('Received HTTP response 500: Request may or may not have been processed, inquire.')     
-        raise RavenNoResponseException('inquire again')
+        raise NoResponseError.new('inquire again')
       else
         self.log('Received HTTP response ' + self.get('httpStatus'))
       end       
@@ -223,7 +236,7 @@ module Raven
 
     def authenticate
       if (self.verificationSignature != self.get('Signature'))
-        raise RavenAuthenticationException.new('Invalid Raven signature')
+        raise AuthenticationError.new('Invalid Raven signature')
       end
     end
 

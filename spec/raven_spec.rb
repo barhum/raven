@@ -1,19 +1,28 @@
 require 'spec_helper'
-require 'pry'
 
 describe Raven do
+
+  before (:each) do
+    Raven.config do |config|
+      config.user = "ernest"
+      config.secret = 'all good men die young'
+      config.gateway = "https://demo.pacnetservices.com/realtime"
+      config.prefix = "TEST"
+      config.ravenDebug = "off"
+    end
+  end
+
   it "should not raise an exception if operation of type 'submit' is made" do
     pymtReq = Raven::Raven.new('submit')
     pymtReq.should_not raise_exception
   end
 
   it "should raise an exception if operation of type 'wrong' is made" do
-    expect { Raven::Raven.new('wrong') }.to raise_exception
+    expect { Raven::Raven.new('wrong') }.to raise_exception(Raven::NoSuchOperationError)
   end
 
   it "should set the current operation of submit" do
     pymtReq = Raven::Raven.new('submit')
-    binding.pry
     pymtReq.operation.should eq 'submit'
   end 
 
@@ -62,7 +71,7 @@ describe Raven do
     pymtReq = Raven::RavenRequest.new('submit')
     pymtReq.values['UserName'].should eq "ernest"
     pymtReq.values['RAPIVersion'].should eq "2"
-    pymtReq.values['RAPIInterface'].should eq "Rails1.0"  
+    pymtReq.values['RAPIInterface'].should eq "Rails0.1"  
   end
 
   it "should return a signature for the operation" do 
