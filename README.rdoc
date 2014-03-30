@@ -18,7 +18,7 @@ config/environments/*
     config.ravenDebug = "off"
   end
 
-Submiting a Raven Request:
+Submitting a Raven Request:
 
   pymtReq = Raven::RavenRequest.new('submit')
   pymtReq.set('PRN', '840033')
