@@ -67,7 +67,7 @@ describe Raven do
     pymtReq.printValues.should print ['840033', 'USD', '4000000000000010', 'cc_debit', '0919', '2000']
   end
 
-  it "should set the user name from the config file" do 
+  it "should set the user name from the config settings" do 
     pymtReq = Raven::RavenRequest.new('submit')
     pymtReq.values['UserName'].should eq "ernest"
     pymtReq.values['RAPIVersion'].should eq "2"
@@ -85,16 +85,6 @@ describe Raven do
     pymtReq.signature.length.should be 40
   end
 
-  it "should set the signature in values" do 
-    pymtReq = Raven::RavenRequest.new('submit')
-    pymtReq.set('PRN', '840033')
-    pymtReq.set('Currency', 'USD')
-    pymtReq.set('CardNumber', '4000000000000011')
-    pymtReq.set('PymtType', 'cc_debit')
-    pymtReq.set('ExpiryDate', '0919')
-    pymtReq.set('Amount', 2000)
-    pymtReq.send
-  end  
 
   it "should set the signature in values" do 
     pymtReq = Raven::RavenRequest.new('submit')

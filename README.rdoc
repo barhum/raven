@@ -2,6 +2,12 @@
 
 Setup:
 
+gem 'raven', :git => 'git://github.com/barhum/raven.git'
+
+Add this to each environment with their appropiate settings.
+
+Note: Do not to upload your user and secret to your github! use gitignore...
+
 config/environments/*
 
   Raven.config do |config|
@@ -11,6 +17,18 @@ config/environments/*
     config.prefix = "TEST"
     config.ravenDebug = "off"
   end
+
+Submiting a Raven Request:
+
+  pymtReq = Raven::RavenRequest.new('submit')
+  pymtReq.set('PRN', '840033')
+  pymtReq.set('Currency', 'USD')
+  pymtReq.set('CardNumber', '4000000000000011')
+  pymtReq.set('PymtType', 'cc_debit')
+  pymtReq.set('ExpiryDate', '0919')
+  pymtReq.set('Amount', 2000)
+  response = pymtReq.send
+
 
 demo at https://github.com/barhum/raven_demo
 
